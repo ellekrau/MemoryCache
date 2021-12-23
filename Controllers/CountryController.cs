@@ -7,19 +7,25 @@ namespace CountryAPI.Controllers;
 public class CountryController : ControllerBase
 {
     const string CONTRIES_KEY = "Countries";
-    const string COUNTRIES_URL = "";
+    const string COUNTRIES_URL = "https://restcountries.eu/rest/v2/all";
     readonly IMemoryCache _memoryCache;
+    readonly HttpClient _countryHttpClient;
 
     public CountryController(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
+        _countryHttpClient = new HttpClient { BaseAddress = new Uri(COUNTRIES_URL) };
     }
 
+    [HttpGet]
     public async Task<IActionResult> GetCountries()
     {
         if (_memoryCache.TryGetValue(CONTRIES_KEY, out object countriesObject))
             return Ok(countriesObject);
 
-        
+        var response = await _countryHttpClient.GetAsync(string.Empty);
+        var responseData = await response.Content.ReadFromJsonAsync<IList<Country>>();
+
+        return Ok();
     }
 }
