@@ -7,7 +7,7 @@ namespace CountryAPI.Controllers;
 public class CountryController : ControllerBase
 {
     const string CONTRIES_KEY = "Countries";
-    const string COUNTRIES_URL = "https://restcountries.eu/rest/v2/all";
+    const string COUNTRIES_URL = "https://restcountries.com/v2/all";
     readonly IMemoryCache _memoryCache;
     readonly HttpClient _countryHttpClient;
 
