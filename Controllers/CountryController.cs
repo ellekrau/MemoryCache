@@ -24,8 +24,16 @@ public class CountryController : ControllerBase
             return Ok(countriesObject);
 
         var response = await _countryHttpClient.GetAsync(string.Empty);
-        var responseData = await response.Content.ReadFromJsonAsync<IList<Country>>();
+        var countries = await response.Content.ReadFromJsonAsync<IList<Country>>();
 
-        return Ok();
+        var memoryCacheOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
+            SlidingExpiration = TimeSpan.FromSeconds(1200)
+        };
+
+        _memoryCache.Set(CONTRIES_KEY, countries, memoryCacheOptions);
+
+        return Ok(countries);
     }
 }
